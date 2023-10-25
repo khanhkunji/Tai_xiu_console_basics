@@ -19,8 +19,6 @@ string matKhau = "";
 string tk = "";
 string mk = "";
 string ingame = "";
-int tt = 100000000;
-
 
 //du lieu game
 const int MAX_ACCOUNTS = 5;
