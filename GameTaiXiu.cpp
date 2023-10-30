@@ -19,8 +19,7 @@ string matKhau = "";
 string tk = "";
 string mk = "";
 string ingame = "";
-long long tt = 0;
-
+long long tt;
 
 //du lieu game
 const int MAX_ACCOUNTS = 5;
@@ -35,16 +34,16 @@ int t = 0, m = 0, n = 0, e = 0;
 int dem_ket_qua = 0;
 int s1, s2, s3;
 int id;
-string rs = "";
+string rs;
 long long tien = 0;
 
 //DATA
 int KET_QUA_DAT_CUOC[MAX_SIZE];
 string KET_QUA_TAI_XIU[MAX_SIZE];
-string DATABASE_ACCOUNTS[MAX_ACCOUNTS + 1];
-string DATABASE_PASSWORDS[MAX_PASSWORDS + 1];
+string DATABASE_ACCOUNTS[MAX_ACCOUNTS];
+string DATABASE_PASSWORDS[MAX_PASSWORDS];
 string DATABASE_INGAME[MAX_INGAME + 1];
-long long DATABASE_MONEYGAME[MAX_MONEY + 1];
+long long DATABASE_MONEYGAME[MAX_MONEY];
 
 
 //chuong trinh
@@ -128,9 +127,6 @@ void DangNhap()
 	{
 		id = KiemTraTaiKhoan(taiKhoan, matKhau);
 		cout << "\n\t\t\t\tCHAO MUNG BAN " << DATABASE_INGAME[id] << " !XIN HAY DAT CUOC!!!";
-		if (DATABASE_MONEYGAME[id] < 0) {
-			DATABASE_MONEYGAME[id] = 0;
-		}
 		while (true) {
 			cout << "\n\t\t\t\tSO TIEN HIEN TAI: " << DATABASE_MONEYGAME[id];
 			if (DATABASE_MONEYGAME[id] <= 0) {
@@ -144,23 +140,20 @@ void DangNhap()
 			else
 			{
 				DatCuoc(id);
-				char cc;
-				cout << "\n\t\t\t\tBan chon: 1.TAI\t2.XIU";
-				cout << "\n\t\t\t\tChon:";
-				cin >> rs;
+				cin.ignore();
+				cout << "\n\t\t\t\tBan chon: 1.TAI\t2.XIU"
+					<< "\n\t\t\t\tChon:";
+				getline(cin, rs);
 				if (rs == "1")
-				{
 					rs = "TAI";
-				}	
 				else
-				{
 					rs = "XIU";
-				}
 				TaiXiu(rs, tien, id);
 				cout << "\n\t\t\t\tTiep tuc cuoc choi(ENTER) hay thoat ra man hinh chinh(Any key)???";
-				cc = _getch();
+				char cc = _getch();
 				if (cc != 13)
 					Display();
+
 			}
 		}
 
@@ -205,14 +198,14 @@ void DatCuoc(int& id)
 {
 	cout << "\n\t\t\t\t\tMUC TIEN\n"
 		<< "\t\t\t\t1.10K\t2.20K\t3.50K\t4.100K\t5.200K"
-		<< "\t6.500K\n\t\t\t\t7.1M\t8.3M\t9.5M\t10.10M\t11.50M\t12.100M";
-	int soTienDatCuoc;
-	double tongMucTien = 0;
+		<< "\t6.500K\n\t\t\t\t7.1M\t8.3M\t9.5M\t10.10M\t11.50M\t12.100M" << endl;
+	long long soTienDatCuoc;
+	long long tongMucTien = 0;
 	char tt;
 	do {
-		cout << "\n\t\t\t\tMoi ban chon muc tien:";
-		cin >> soTienDatCuoc;
-		if (tongMucTien < DATABASE_MONEYGAME[id]) {
+		if (tongMucTien < DATABASE_MONEYGAME[id] && tien < DATABASE_MONEYGAME[id]) {
+			cout << "\n\t\t\t\tMoi ban chon muc tien:";
+			cin >> soTienDatCuoc;
 			switch (soTienDatCuoc)
 			{
 			case 1:
@@ -255,18 +248,16 @@ void DatCuoc(int& id)
 				cout << "\t\t\t\tKhong co muc tien nay!!!";
 				break;
 			}
+			tien = tongMucTien;
 		}
-		else if (tongMucTien >= DATABASE_MONEYGAME[id]) {
-			cout << "\n\t\t\t\tKhong du tien thuc hien!!!";
+		else if (tongMucTien >= DATABASE_MONEYGAME[id] && tien >= DATABASE_MONEYGAME[id])
+		{
+			cout << "\n\t\t\t\tKhong du tien thuc hien!!!" << endl;
 		}
-		cout << "\t\t\t\tTiep tuc dat cuoc ? (Y/N) :";
+		cout << "\n\t\t\t\tTiep tuc dat cuoc ? (Y/N) :";
 		cin >> tt;
 	} while (tt == 'Y' || tt == 'y');
-	if (tongMucTien > 0) {
-		cout << "\t\t\t\tTong muc dat duoc la :" << tongMucTien << endl;
-		tien = tongMucTien;
-	}
-
+	cout << "\n\t\t\t\tTong muc dat duoc hien tai la :" << tongMucTien << endl;
 
 }
 
@@ -274,9 +265,16 @@ void NapTien(int& id)
 {
 	cout << "\t\t\t\tNhap so tien can nap :";
 	cin >> tien;
-	DATABASE_MONEYGAME[id] += tien;
-	cout << "\t\t\t\tNAP TIEN THANH CONG!!!" << endl;
+	if (tien >= 10000 && tien <= 5000000)
+	{
+		DATABASE_MONEYGAME[id] += tien;
+		cout << "\n\t\t\t\tNAP TIEN THANH CONG!!!" << endl;
+	}
+	else {
+		cout << "\n\t\t\t\tSO TIEN QUA LON!!!" << endl;
+	}
 	Display();
+
 }
 
 void RutTien()
@@ -347,6 +345,7 @@ void TaiXiu(string& rs, long long& tien, int& id)
 	s2 = 1 + (rand() % (xiNgau));
 	s3 = 1 + (rand() % (xiNgau));
 	cout << "\n\t\t\t\tKET QUA XI NGAU";
+	Sleep(1500);//Dung man hinh 1.5s
 	cout << "\n\t\t\t\t=====" << "\t" << "=====" << "\t" << "=====" << endl
 		<< "\t\t\t\t| " << s1 << " |" << "\t" << "| " << s2 << " |" << "\t" << "| " << s3 << " |" << endl
 		<< "\t\t\t\t=====" << "\t" << "=====" << "\t" << "=====";
@@ -385,6 +384,9 @@ void TaiXiu(string& rs, long long& tien, int& id)
 	else {
 		cout << "\n\t\t\t\tBan doan sai roi.Doan lai nao!!!" << endl;
 		DATABASE_MONEYGAME[id] -= tien;
+		if (DATABASE_MONEYGAME[id] < 0) {
+			DATABASE_MONEYGAME[id] = 0;
+		}
 		cout << "\n\t\t\t\tSo du hien tai la " << DATABASE_MONEYGAME[id] << endl;
 	}
 
@@ -413,14 +415,14 @@ void Display()
 			<< "\n\t\t\t\tChon:";
 		int c;
 		cin >> c;
-		if (c == 1) 
+		if (c == 1)
 		{
 			DangNhap();
-		}	
+		}
 		else if (c == 2)
 		{
 			DangKyTaiKhoan();
-		}	
+		}
 		else if (c == 3)
 		{
 			cin.ignore();
@@ -436,7 +438,7 @@ void Display()
 
 			}
 			cout << "\n\t\t\t\tBan co muon tiep tuc choi ?(Y/N):";
-			
+
 			cin >> lc;
 			if (lc == 'y' || lc == 'Y') {
 				cout << endl;
@@ -486,7 +488,19 @@ void Display()
 		if (idx >= 0)
 			NapTien(idx);
 		else
+		{
 			cout << "\n\t\t\t\tKhong co tai khoan nay!!!" << endl;
+			cout << "\n\t\t\t\tBan co muon tiep tuc choi ?(Y/N) :";
+			char lc = _getch();
+			if (lc == 'y' || lc == 'Y') {
+				cout << endl;
+				Display();
+			}
+			else {
+				cout << "\n\t\t\t\tCHAO TAM BIET!!!";
+				return;
+			}
+		}
 		break;
 	case 3:
 		RutTien();
